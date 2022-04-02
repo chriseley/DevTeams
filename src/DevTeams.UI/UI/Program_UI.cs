@@ -20,15 +20,15 @@ using System.Threading.Tasks;
 
     private void SeedData()
     {
-        var chris = new Developer("Chris","Eley");
-        var terry = new Developer("Terry","Brown");
-        var robert = new Developer("Robert","Rupp");
-        var donald = new Developer("Donald","Morefield");
-        var ricky = new Developer("Ricky","Bobby");
-        var michael = new Developer("Michael","Scarn");
-        var dwight = new Developer("Dwight","Schrute");
-        var jim = new Developer("Jim","Halpert");
-        var kevin = new Developer("Kevin","Malone");
+        var chris = new Developer("Chris","Eley", true);
+        var terry = new Developer("Terry","Brown", false);
+        var robert = new Developer("Robert","Rupp", true);
+        var donald = new Developer("Donald","Morefield", true);
+        var ricky = new Developer("Ricky","Bobby", false);
+        var michael = new Developer("Michael","Scarn", true);
+        var dwight = new Developer("Dwight","Schrute", false);
+        var jim = new Developer("Jim","Halpert", false);
+        var kevin = new Developer("Kevin","Malone", true);
         _dRepo.AddDeveloperToDatabase(chris);
         _dRepo.AddDeveloperToDatabase(terry);
         _dRepo.AddDeveloperToDatabase(robert);
@@ -68,13 +68,13 @@ using System.Threading.Tasks;
         while(isRunning)
         {
             Console.Clear();
-            System.Console.WriteLine("==Komodo Insurance Devoloper Teams==");
+            System.Console.WriteLine("===Komodo Insurance Devoloper Teams===");
             System.Console.WriteLine("Please choose one of the following: \n"+
             "1. Add new team\n"+
             "2. View all teams\n"+
             "3. View team by ID\n"+
             "4. Update team\n"+
-            "==Developers==\n"+
+            "===Developers===\n"+
             "5. Add new developer\n"+
             "6. View all developers\n"+
             "7. View developer by ID\n"+
@@ -183,6 +183,7 @@ using System.Threading.Tasks;
 
     private void ViewAllDevelopers()
     {
+        Console.Clear();
         List<Developer> developersInDb = _dRepo.GetAllDevelopers();
         foreach(Developer developer in developersInDb)
         {
@@ -196,6 +197,7 @@ using System.Threading.Tasks;
     {
         System.Console.WriteLine($"DeveloperID: {developer.ID}\n"+
         $"DeveloperName: {developer.FirstName} {developer.LastName}\n"+
+        $"hasPluralSight: {developer.HasPluralSightAccess}\n"+
         "----------------------------------\n");
     }
 
@@ -203,13 +205,24 @@ using System.Threading.Tasks;
     {
         Console.Clear();
         var newDeveloper = new Developer();
-        System.Console.WriteLine("[==Developer Enlisting Form==\n");
+        System.Console.WriteLine("==Developer Enlisting Form==\n");
 
         System.Console.WriteLine("Please enter developer first name:");
         newDeveloper.FirstName =Console.ReadLine();
 
         System.Console.WriteLine("Please enter developer last name:");
         newDeveloper.LastName =Console.ReadLine();
+        System.Console.WriteLine("Does this developer have pluralsight access? y/n");
+        var hasPluralSightAccess =Console.ReadLine();
+         if (hasPluralSightAccess=="Y".ToLower())
+        {
+            newDeveloper.HasPluralSightAccess = true;
+            System.Console.WriteLine("Dev has pluralsight access.");
+        }
+        else
+        {
+             newDeveloper.HasPluralSightAccess = false;
+        }
 
         bool isSuccessful = _dRepo.AddDeveloperToDatabase(newDeveloper);
         if(isSuccessful)
@@ -243,7 +256,7 @@ using System.Threading.Tasks;
 
             var currentDevelopers = _dRepo.GetAllDevelopers();
 
-            System.Console.WriteLine("Please enter a team name:");
+            System.Console.WriteLine("Please enter updated team name:");
             newDevTeam.Name = Console.ReadLine();
 
             bool hasAssignedDevs = false;
